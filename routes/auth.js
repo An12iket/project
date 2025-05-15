@@ -36,13 +36,13 @@ router.post("/signup", async (req, res) => {
     );
 
     return res.status(201).json({
-        token,
-        user: {
-            id : newUser._id,
-            username: newUser.username,
-            firstname: newUser.firstname,
-            lastname: newUser.lastname
-        }
+      token,
+      user: {
+        id: newUser._id,
+        username: newUser.username,
+        firstname: newUser.firstname,
+        lastname: newUser.lastname,
+      },
     });
   } catch (err) {
     console.error(err);
@@ -50,8 +50,39 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("/login", (req, res) => {
-    
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: "Both fields are required" });
+  }
+
+  try {
+    const existingUser = await user.findOne({ username });
+
+    if (!existingUser || !(await bcrypt.compare(password, existingUser.password))) {
+      return res.status(401).json({ message: "Invalid username or password" });
+    }
+
+    const token = jwt.sign(
+      { id: existingUser._id, username: existingUser.username },
+      secretKey,
+      { expiresIn: "1h" }
+    );
+
+    return res.status(200).json({
+      token,
+      user: {
+        id: existingUser._id,
+        username: existingUser.username,
+        firstname: existingUser.firstname,
+        lastname: existingUser.lastname
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 module.exports = router;
