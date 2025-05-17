@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const user = require("../models/user");
 const secretKey = process.env.JWT_SECRET;
 
-router.post("auth/signup", async (req, res) => {
+router.post("/signup", async (req, res) => {
   const { username, password, firstname, lastname } = req.body;
   
   if(!username || !password|| !firstname || !lastname){ 
@@ -51,7 +51,7 @@ router.post("auth/signup", async (req, res) => {
 })
 
 
-router.post("auth/login", async (req, res) => {
+router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
