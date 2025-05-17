@@ -8,8 +8,9 @@ const secretKey = process.env.JWT_SECRET;
 
 router.post("auth/signup", async (req, res) => {
   const { username, password, firstname, lastname } = req.body;
-    if(!username || !password || !firstname || !lastname){
-    return res.status(400).json({ message: "All fields are required !" });
+  
+  if(!username || !password|| !firstname || !lastname){ 
+  return res.status(400).json({ message: "All fields are required !" });
   }
 
   try {
